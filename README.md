@@ -15,8 +15,6 @@
 
 IP 158.160.126.205
 
-Frontend films.nomoredomainsmonster.ru
-
-Backend api.films.nomoredomainsmonster.ru
+Backend https://api.films.nomoredomainsmonster.ru
 
 ### Адрес репозитория💻: https://github.com/itsistcat/movies-explorer-api
