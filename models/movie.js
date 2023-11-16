@@ -1,11 +1,7 @@
 const mongoose = require('mongoose');
+const { URL_REGEX } = require('../utils/validate');
 
-const { Schema } = mongoose;
-const { ObjectId } = mongoose.Schema.Types;
-
-const { URL_REGEX } = require('../utils/constants');
-
-const movieSchema = new Schema(
+const movieSchema = new mongoose.Schema(
   {
     country: {
       type: String,
@@ -37,7 +33,6 @@ const movieSchema = new Schema(
       required: true,
       validate: {
         validator: (url) => URL_REGEX.test(url),
-        message: 'Требуется URL',
       },
     },
 
@@ -46,7 +41,6 @@ const movieSchema = new Schema(
       required: true,
       validate: {
         validator: (url) => URL_REGEX.test(url),
-        message: 'Требуется URL',
       },
     },
 
@@ -55,12 +49,11 @@ const movieSchema = new Schema(
       required: true,
       validate: {
         validator: (url) => URL_REGEX.test(url),
-        message: 'Требуется URL',
       },
     },
 
     owner: {
-      type: ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'user',
       required: true,
     },
@@ -79,6 +72,9 @@ const movieSchema = new Schema(
       type: String,
       required: true,
     },
+  },
+  {
+    versionKey: false,
   },
 );
 

@@ -1,27 +1,28 @@
 const jwt = require('jsonwebtoken');
-
 const { NODE_ENV, JWT_SECRET } = require('../utils/constants');
+const UNAUTHORIZED_ERROR = require('../errors/UnauthorizedError'); // 401
+const ERROR_MESSAGES = require('../utils/errorMes');
 
-function authorizeUser(req, _, next) {
+const { passIncorrect } = ERROR_MESSAGES[401].users;
+
+function auth(req, _, next) {
   const { authorization } = req.headers;
-  const bearer = 'Bearer ';
 
-  if (!authorization || !authorization.startsWith(bearer)) {
-    return 'Неправильные почта или пароль';
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return next(new UNAUTHORIZED_ERROR(passIncorrect));
   }
 
-  const token = authorization.replace(bearer, '');
+  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
   } catch (err) {
-    return 'Неправильные почта или пароль';
+    return next(new UNAUTHORIZED_ERROR(passIncorrect));
   }
-
   req.user = payload;
 
   return next();
 }
 
-module.exports = authorizeUser;
+module.exports = auth;

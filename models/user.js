@@ -3,7 +3,12 @@ const bcrypt = require('bcrypt');
 
 const { Schema } = mongoose;
 
-const { EMAIL_REGEX } = require('../utils/constants');
+const NOT_FOUND_ERROR = require('../errors/NotFoundError');
+const ERROR_MESSAGES = require('../utils/errorMes');
+
+const { emailNotFound } = ERROR_MESSAGES[404].users;
+
+const { EMAIL_REGEX } = require('../utils/validate');
 
 const userSchema = new Schema(
   {
@@ -13,7 +18,6 @@ const userSchema = new Schema(
       unique: true,
       validate: {
         validator: (email) => EMAIL_REGEX.test(email),
-        message: 'Требуется ввести электронный адрес',
       },
     },
 
@@ -21,10 +25,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
       select: false,
-      validate: {
-        validator: ({ length }) => length >= 8,
-        message: 'Пароль должен состоять минимум из 8 символов',
-      },
     },
 
     name: {
@@ -32,7 +32,7 @@ const userSchema = new Schema(
       required: true,
       validate: {
         validator: ({ length }) => length >= 2 && length <= 30,
-        message: 'Имя пользователя должно быть длиной от 2 до 30 символов',
+
       },
     },
   },
@@ -56,7 +56,7 @@ const userSchema = new Schema(
                 });
             }
 
-            return Promise.reject();
+            throw new NOT_FOUND_ERROR(emailNotFound);
           });
       },
     },
